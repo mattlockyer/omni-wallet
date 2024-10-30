@@ -1,0 +1,6 @@
+dist
+node_modules
+.env
+contract/target
+**/yarn.lock
+notes
