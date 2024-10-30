@@ -67,9 +67,9 @@ fn recover_pk(msg: &str, sig: &str) -> Vec<u8> {
 
 #[test]
 fn test_require() {
-    let address: &str = "0xdcd4ecc6ea88aba022db792bbf7d6538deae7f6b";
+    let address: &str = "0xe91a48d0704b4b2f112c5664658bbf43d2ea20dd";
     let msg: &str = "hello world";
     let sig: &str =
-        "0x18f82e3080cd83fec83dd6102308760c3da42cb32ddf40f4619cc663b069fee7126abd95d53c33f2f396daaa06e78b56be6d8e1810cce990b7ca59cdd5dab28f1b";
+        "0x0e3f0a5162eed363d64f35bcc7a8c770fd41a8664a815f90c16aa89dd598c2fc753900d358f9e7cb9e2231c12c0f92d3b092dfb8dfdc38b5fa38c278115cd2401c";
     require(address, msg, sig);
 }

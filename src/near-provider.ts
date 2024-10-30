@@ -78,10 +78,10 @@ export const getTxResult = async (txHash) => {
 
 export const getTxSuccessValue = async (txHash) => {
     const transaction = await getTxResult(txHash);
-    return parseSuccessValue;
+    return parseSuccessValue(transaction);
 };
 
-export const parseSuccessValue = async (transaction) => {
+export const parseSuccessValue = (transaction) => {
     try {
         return JSON.parse(
             Buffer.from(transaction.status.SuccessValue, 'base64').toString(

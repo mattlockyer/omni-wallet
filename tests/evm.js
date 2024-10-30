@@ -1,46 +1,49 @@
 import test from 'ava';
 
-import { nearProvider, bitcoin } from '../dist/index.js';
 import { sha256 } from 'bitcoinjs-lib/src/crypto.js';
-const { getAccount, tradeSignature } = nearProvider;
+import { nearProvider, evm } from '../dist/index.js';
+const { contractView, contractCall } = nearProvider;
 
-// tests
+const msg = 'hello world';
 
-// test('account and balance test', async (t) => {
-//     const account = getAccount();
-//     const balance = await account.getAccountBalance();
-//     console.log(balance);
-//     t.pass();
-// });
+test('lib.evm.signMessage', async (t) => {
+    const msg = 'hello world';
+    const { address, sig } = await evm.signMessage(msg);
 
-// test('sign bitcoin message', async (t) => {
-//     bitcoin.signMessage('hello world');
-//     t.pass();
-// });
+    t.not(address, undefined);
+    t.not(sig, undefined);
+    t.is(address.length, 42);
+    t.is(sig.length, 132);
+});
 
-// test('tradeSignature bitcoin bitcoin', async (t) => {
-//     const msg = 'hello world';
-//     const { pk, sig } = bitcoin.signMessage(msg);
-//     const hash = sha256(Buffer.from(msg)).toString('hex');
+test('contract::verify_owner source: evm', async (t) => {
+    const { address, sig } = await evm.signMessage(msg);
 
-//     let res;
-//     try {
-//         res = await tradeSignature({
-//             owner: pk,
-//             msg,
-//             sig,
-//             hash,
-//             source: 'bitcoin',
-//             destination: 'bitcoin',
-//         });
-//     } catch (e) {
-//         if (/deserialize/gi.test(JSON.stringify(e))) {
-//             return t.fail('Bad arguments to tradeSignature method');
-//         }
-//         throw e;
-//     }
+    const res = await contractView('verify_owner', {
+        owner: address,
+        msg,
+        sig,
+        source: 'evm',
+    });
 
-//     console.log(res);
+    t.is(res, true);
+});
 
-//     t.pass();
-// });
+test('contract::trade_signature source: evm', async (t) => {
+    const { address, sig } = await evm.signMessage(msg);
+    const hash = sha256(Buffer.from(msg)).toString('hex');
+
+    const res = await contractCall('trade_signature', {
+        owner: address,
+        msg,
+        sig,
+        hash,
+        source: 'evm',
+        destination: 'bitcoin',
+    });
+
+    t.not(res, undefined);
+    t.not(res.big_r, undefined);
+    t.not(res.s, undefined);
+    t.not(res.recovery_id, undefined);
+});

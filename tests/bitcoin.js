@@ -2,30 +2,12 @@ import test from 'ava';
 
 import { nearProvider, bitcoin } from '../dist/index.js';
 import { sha256 } from 'bitcoinjs-lib/src/crypto.js';
-const { getAccount, contractCall, contractView, getTxResult } = nearProvider;
+const { contractCall, contractView } = nearProvider;
 
-// tests
+const msg = 'hello world';
 
-test('library.nearProvider.getAccount', async (t) => {
-    const account = getAccount();
-    const balance = await account.getAccountBalance();
-
-    // TODO test balance
-
-    t.not(balance.total, undefined);
-});
-
-test('lib.nearProvider.getTxResult', async (t) => {
-    const res = await getTxResult(
-        'GhFx8HjBjU7uBkaK5U8T3sFCQEPS1zoEGfKe1gRaac3Z',
-    );
-    console.log('res.status.SuccessValue', res.status.SuccessValue);
-    t.pass();
-});
-
-test('library.bitcoin.signMessage', async (t) => {
-    const { pk, sig } = await bitcoin.signMessage('hello world');
-    console.log(pk, sig);
+test('lib.bitcoin.signMessage', async (t) => {
+    const { pk, sig } = await bitcoin.signMessage(msg);
     t.not(pk, undefined);
     t.not(sig, undefined);
     t.is(pk.length, 64);
@@ -33,7 +15,6 @@ test('library.bitcoin.signMessage', async (t) => {
 });
 
 test('contract::verify_owner source: bitcoin', async (t) => {
-    const msg = 'hello world!';
     const { pk, sig } = await bitcoin.signMessage(msg);
 
     const res = await contractView('verify_owner', {
@@ -47,7 +28,6 @@ test('contract::verify_owner source: bitcoin', async (t) => {
 });
 
 test('contract::trade_signature source: bitcoin', async (t) => {
-    const msg = 'hello world!!!';
     const { pk, sig } = await bitcoin.signMessage(msg);
     const hash = sha256(Buffer.from(msg)).toString('hex');
 
@@ -60,7 +40,8 @@ test('contract::trade_signature source: bitcoin', async (t) => {
         destination: 'bitcoin',
     });
 
-    console.log(res);
-
-    t.pass();
+    t.not(res, undefined);
+    t.not(res.big_r, undefined);
+    t.not(res.s, undefined);
+    t.not(res.recovery_id, undefined);
 });
