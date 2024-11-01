@@ -23,12 +23,16 @@ This library helps developers prepare intents, sign them with popular wallets an
 
 ![image](https://github.com/user-attachments/assets/cd8f965a-780f-48bb-9dde-1fca7babec84)
 
+# Resources
 
-### Development Notes
+-   [Chain Abstraction Dev Group](https://t.me/chain_abstraction)
+
+# Development Notes
 
 -   [x] contract verify_owner
 -   [x] bitcoin signing tests
 -   [x] near contract call tests for bitcoin source and dest
 -   [x] evm tests and contract calls
+-   [ ] add NEAR and EVM transaction building client side
 -   [ ] add test with signatures generated from okx and unisat
 -   [ ] implement frontent for e2e wallet tests (frontend folder, parcel?)
