@@ -1,6 +1,6 @@
 import * as nearAPI from 'near-api-js';
 const { Near, Account, KeyPair, keyStores } = nearAPI;
-import { accountId, secretKey, contractId } from './env.js';
+import { accountId, secretKey, omniContractId } from './env.js';
 
 const getTxTimeout = 20000;
 const networkId = 'testnet';
@@ -25,7 +25,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export const getAccount = (id = accountId) => new Account(connection, id);
 
-export const contractView = async (methodName, args) => {
+export const contractView = async ({
+    contractId = omniContractId,
+    methodName,
+    args = {},
+}) => {
     const account = getAccount();
     let res;
     try {
@@ -44,7 +48,11 @@ export const contractView = async (methodName, args) => {
     return res;
 };
 
-export const contractCall = async (methodName, args) => {
+export const contractCall = async ({
+    contractId = omniContractId,
+    methodName,
+    args,
+}) => {
     const account = getAccount();
     let res;
     try {

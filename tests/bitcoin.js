@@ -17,11 +17,14 @@ test('lib.bitcoin.signMessage', async (t) => {
 test('contract::verify_owner source: bitcoin', async (t) => {
     const { pk, sig } = await bitcoin.signMessage(msg);
 
-    const res = await contractView('verify_owner', {
-        owner: pk,
-        msg,
-        sig,
-        source: 'bitcoin',
+    const res = await contractView({
+        methodName: 'verify_owner',
+        args: {
+            owner: pk,
+            msg,
+            sig,
+            source: 'bitcoin',
+        },
     });
 
     t.is(res, true);
@@ -31,13 +34,16 @@ test('contract::trade_signature source: bitcoin', async (t) => {
     const { pk, sig } = await bitcoin.signMessage(msg);
     const hash = sha256(Buffer.from(msg)).toString('hex');
 
-    const res = await contractCall('trade_signature', {
-        owner: pk,
-        msg,
-        sig,
-        hash,
-        source: 'bitcoin',
-        destination: 'bitcoin',
+    const res = await contractCall({
+        methodName: 'trade_signature',
+        args: {
+            owner: pk,
+            msg,
+            sig,
+            hash,
+            source: 'bitcoin',
+            destination: 'bitcoin',
+        },
     });
 
     t.not(res, undefined);

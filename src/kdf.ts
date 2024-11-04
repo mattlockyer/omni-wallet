@@ -5,6 +5,10 @@ import hash from 'hash.js';
 import bs58check from 'bs58check';
 import keccak from 'keccak';
 import { generateSeedPhrase } from 'near-seed-phrase';
+import { contractView } from './near-provider.js';
+import { mpcContractId, omniContractId } from './env.js';
+
+let mpcPublicKey;
 
 export function najPublicKeyStrToUncompressedHexPoint(
     najPublicKeyStr: string,
@@ -129,13 +133,29 @@ async function uncompressedHexPointToNearImplicit(uncompressedHexPoint) {
     };
 }
 
-export async function generateAddress({ publicKey, accountId, path, chain }) {
-    console.log('publicKey', publicKey);
+interface generateAddressArgs {
+    accountId: string;
+    chain: string;
+    path: string;
+}
+
+export async function generateAddress({
+    accountId = omniContractId,
+    chain,
+    path,
+}: generateAddressArgs) {
+    if (!mpcPublicKey) {
+        mpcPublicKey = await contractView({
+            contractId: mpcContractId,
+            methodName: 'public_key',
+        });
+    }
+    console.log('publicKey', mpcPublicKey);
     // console.log('accountId', accountId);
     // console.log('path', path);
 
     let childPublicKey = await deriveChildPublicKey(
-        najPublicKeyStrToUncompressedHexPoint(publicKey),
+        najPublicKeyStrToUncompressedHexPoint(mpcPublicKey),
         accountId,
         path,
     );

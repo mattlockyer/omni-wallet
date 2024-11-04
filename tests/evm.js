@@ -19,11 +19,14 @@ test('lib.evm.signMessage', async (t) => {
 test('contract::verify_owner source: evm', async (t) => {
     const { address, sig } = await evm.signMessage(msg);
 
-    const res = await contractView('verify_owner', {
-        owner: address,
-        msg,
-        sig,
-        source: 'evm',
+    const res = await contractView({
+        methodName: 'verify_owner',
+        args: {
+            owner: address,
+            msg,
+            sig,
+            source: 'evm',
+        },
     });
 
     t.is(res, true);
@@ -33,13 +36,16 @@ test('contract::trade_signature source: evm', async (t) => {
     const { address, sig } = await evm.signMessage(msg);
     const hash = sha256(Buffer.from(msg)).toString('hex');
 
-    const res = await contractCall('trade_signature', {
-        owner: address,
-        msg,
-        sig,
-        hash,
-        source: 'evm',
-        destination: 'bitcoin',
+    const res = await contractCall({
+        methodName: 'trade_signature',
+        args: {
+            owner: address,
+            msg,
+            sig,
+            hash,
+            source: 'evm',
+            destination: 'bitcoin',
+        },
     });
 
     t.not(res, undefined);
