@@ -1,6 +1,7 @@
 import { base_encode, base_decode } from 'near-api-js/lib/utils/serialize.js';
-import { ec as EC } from 'elliptic';
-import { sha3_256 } from 'js-sha3';
+import * as EC from 'elliptic';
+import * as jsSha3 from 'js-sha3';
+const { sha3_256 } = jsSha3;
 import hash from 'hash.js';
 import bs58check from 'bs58check';
 import keccak from 'keccak';

@@ -10,6 +10,7 @@
     "scripts": {
         "test": "yarn build && ava",
         "test:evm": "yarn build && ava ./tests/evm.js",
+        "test:bitcoin": "yarn build && ava ./tests/bitcoin.js",
         "build": "yarn tsc && node --trace-deprecation --env-file .env ./dist/index.js",
         "format": "prettier --write ."
     },
@@ -25,9 +26,9 @@
         "keccak": "^3.0.4",
         "near-api-js": "^5.0.1",
         "near-seed-phrase": "^0.2.1",
+        "@bitcoinerlab/secp256k1": "^1.1.1",
         "noble-hashes": "^0.3.1",
         "prettier": "^3.3.3",
-        "tiny-secp256k1": "^2.2.3",
         "typescript": "^5.6.3"
     }
 }

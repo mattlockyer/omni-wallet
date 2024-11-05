@@ -1,6 +1,6 @@
 import * as bitcoin from 'bitcoinjs-lib';
 import * as bitcoinMessage from 'bitcoinjs-message';
-import * as ecc from 'tiny-secp256k1';
+import ecc from '@bitcoinerlab/secp256k1';
 import * as ecpair from 'ecpair';
 
 // prefix used by OKX Wallet and UniSat Wallet
