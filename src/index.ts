@@ -1,3 +1,9 @@
+declare global {
+    interface Window {
+        okxwallet: any;
+    }
+}
+// window.okxwallet = window.okxwallet || {};
 globalThis.runtime = typeof window === 'undefined' ? 'node' : 'browser';
 
 export * as nearProvider from './near-provider.js';

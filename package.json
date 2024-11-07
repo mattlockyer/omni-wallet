@@ -11,7 +11,7 @@
         "test": "yarn build && ava",
         "test:evm": "yarn build && ava ./tests/evm.js",
         "test:bitcoin": "yarn build && ava ./tests/bitcoin.js",
-        "build": "yarn tsc && node --trace-deprecation --env-file .env ./dist/index.js",
+        "build": "rm -rf ./frontend/.parcel-cache && yarn tsc && node --trace-deprecation --env-file .env ./dist/index.js",
         "format": "prettier --write ."
     },
     "devDependencies": {

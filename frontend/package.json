@@ -19,10 +19,9 @@
     },
     "scripts": {
         "build": "parcel build src/index.html",
-        "start": "parcel src/index.html --open"
+        "start": "parcel src/index.html"
     },
     "dependencies": {
-        "dotenv": "^16.4.5",
         "react": "^18.3.1",
         "react-dom": "^18.3.1"
     },

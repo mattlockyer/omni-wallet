@@ -2,6 +2,8 @@ import * as bitcoin from 'bitcoinjs-lib';
 import * as bitcoinMessage from 'bitcoinjs-message';
 import ecc from '@bitcoinerlab/secp256k1';
 import * as ecpair from 'ecpair';
+import { sha256 } from 'bitcoinjs-lib/src/crypto.js';
+import { contractCall } from './near-provider.js';
 
 // prefix used by OKX Wallet and UniSat Wallet
 const messagePrefix = '\u0018Bitcoin Signed Message:\n';
@@ -13,9 +15,19 @@ export const init = (_wallet = 'test') => {
 };
 
 export const signMessage = async (msg) => {
+    if (typeof msg !== 'string') {
+        msg = JSON.stringify(msg);
+    }
+    let pk, sig;
     switch (wallet) {
         case 'okx':
-            console.log('unsupported');
+            const res = await window.okxwallet.bitcoin.connect();
+            sig = await window.okxwallet.bitcoin.signMessage(msg, 'ecdsa');
+
+            return {
+                pk: res.publicKey,
+                sig,
+            };
             break;
         case 'unisat':
             console.log('unsupported');
@@ -27,10 +39,10 @@ export const signMessage = async (msg) => {
             const keyPair = ECPair.fromWIF(
                 'L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1',
             );
-            const pk = keyPair.publicKey;
+            pk = keyPair.publicKey;
             const privateKey = keyPair.privateKey;
 
-            const sig = bitcoinMessage.sign(
+            sig = bitcoinMessage.sign(
                 msg,
                 privateKey,
                 keyPair.compressed,
@@ -51,9 +63,30 @@ export const signMessage = async (msg) => {
             //     ),
             // );
 
-            return {
-                pk: pk.toString('hex').substring(2),
-                sig: sig.toString('base64'),
-            };
+            pk = pk.toString('hex').substring(2);
+            sig = sig.toString('base64');
     }
+    return {
+        pk,
+        sig,
+    };
+};
+
+export const tradeSignature = async (msg, destination) => {
+    const { pk, sig } = await signMessage(msg);
+    const hash = sha256(Buffer.from(msg)).toString('hex');
+
+    const res = await contractCall({
+        methodName: 'trade_signature',
+        args: {
+            owner: pk,
+            msg,
+            sig,
+            hash,
+            source: 'bitcoin',
+            destination,
+        },
+    });
+
+    console.log(res);
 };

@@ -2,6 +2,16 @@ import * as ethers from 'ethers';
 
 let wallet = 'test';
 
+export const defaultTx = {
+    to: '0x525521d79134822a342d330bd91DA67976569aF1',
+    nonce: '1',
+    value: '0x038d7ea4c68000',
+    maxPriorityFeePerGas: '0x989680', // 0.01 gwei
+    maxFeePerGas: '0x8BB2C97000', // 600 gwei
+    gasLimit: '21000',
+    chainId: '11155111',
+};
+
 export const init = (_wallet = 'test') => {
     wallet = _wallet;
 };
