@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
 import { wrap } from './state/state';
-import { bitcoin } from '../../dist/index.js';
+import { initWallet, evmTx, tradeSignature } from '../../dist/index.js';
 import './styles/app.scss';
 
 const AppComp = ({ state, update }) => {
@@ -8,35 +7,61 @@ const AppComp = ({ state, update }) => {
 
     console.log(transaction);
 
-    useEffect(() => {
-        (async () => {
-            const { pk, sig } = await bitcoin.signMessage('hello world');
-            console.log(pk, sig);
-        })();
-    }, []);
-
     return (
         <>
             <h4>Transaction</h4>
+            <button
+                onClick={async () => {
+                    update({ json: evmTx.defaultTx }, 'transaction');
+                }}
+            >
+                EVM TX
+            </button>
+            <br />
+            <br />
+
             <textarea
                 rows={12}
                 cols={64}
-                defaultValue={JSON.stringify(transaction.json, null, 4)}
+                value={JSON.stringify(transaction.json, null, 4)}
+                onChange={({ target: { value } }) => {
+                    let json;
+                    try {
+                        json = JSON.parse(value);
+                    } catch (e) {
+                        json = {
+                            message:
+                                'Bad JSON, resetting in 2s. Please try again.',
+                        };
+                        setTimeout(
+                            () =>
+                                update(
+                                    { json: transaction.json },
+                                    'transaction',
+                                ),
+                            2000,
+                        );
+                    }
+                    update({ json }, 'transaction');
+                }}
             ></textarea>
             <br />
             <button
                 onClick={async () => {
-                    bitcoin.init('okx');
+                    initWallet('okx');
                     // const { pk, sig } =
                     //     await bitcoin.signMessage('hello world');
                     // console.log(pk, sig);
-                    const res = await bitcoin.tradeSignature(
-                        JSON.stringify(transaction.json),
-                        'evm',
-                    );
+                    const res = await tradeSignature({
+                        source: 'bitcoin',
+                        destination: 'evm',
+                        txJson: transaction.json,
+                    });
+
+                    console.log(res);
                 }}
             >
-                Sign with OKX Wallet
+                Sign with OKX Bitcoin Wallet
             </button>
         </>
     );

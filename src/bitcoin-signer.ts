@@ -8,18 +8,12 @@ import { contractCall } from './near-provider.js';
 // prefix used by OKX Wallet and UniSat Wallet
 const messagePrefix = '\u0018Bitcoin Signed Message:\n';
 
-let wallet = 'test';
-
-export const init = (_wallet = 'test') => {
-    wallet = _wallet;
-};
-
 export const signMessage = async (msg) => {
     if (typeof msg !== 'string') {
         msg = JSON.stringify(msg);
     }
     let pk, sig;
-    switch (wallet) {
+    switch (globalThis.wallet) {
         case 'okx':
             const res = await window.okxwallet.bitcoin.connect();
             sig = await window.okxwallet.bitcoin.signMessage(msg, 'ecdsa');
@@ -28,7 +22,6 @@ export const signMessage = async (msg) => {
                 pk: res.publicKey,
                 sig,
             };
-            break;
         case 'unisat':
             console.log('unsupported');
             break;
@@ -70,23 +63,4 @@ export const signMessage = async (msg) => {
         pk,
         sig,
     };
-};
-
-export const tradeSignature = async (msg, destination) => {
-    const { pk, sig } = await signMessage(msg);
-    const hash = sha256(Buffer.from(msg)).toString('hex');
-
-    const res = await contractCall({
-        methodName: 'trade_signature',
-        args: {
-            owner: pk,
-            msg,
-            sig,
-            hash,
-            source: 'bitcoin',
-            destination,
-        },
-    });
-
-    console.log(res);
 };

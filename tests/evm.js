@@ -1,14 +1,14 @@
 import test from 'ava';
 
 import { sha256 } from 'bitcoinjs-lib/src/crypto.js';
-import { nearProvider, evm } from '../dist/index.js';
+import { nearProvider, evmSigner } from '../dist/index.js';
 const { contractView, contractCall } = nearProvider;
 
 const msg = 'hello world';
 
-test('lib.evm.signMessage', async (t) => {
+test('lib.evmsigner.signMessage', async (t) => {
     const msg = 'hello world';
-    const { address, sig } = await evm.signMessage(msg);
+    const { address, sig } = await evmsigner.signMessage(msg);
 
     t.not(address, undefined);
     t.not(sig, undefined);
@@ -17,7 +17,7 @@ test('lib.evm.signMessage', async (t) => {
 });
 
 test('contract::verify_owner source: evm', async (t) => {
-    const { address, sig } = await evm.signMessage(msg);
+    const { address, sig } = await evmsigner.signMessage(msg);
 
     const res = await contractView({
         methodName: 'verify_owner',
@@ -33,7 +33,7 @@ test('contract::verify_owner source: evm', async (t) => {
 });
 
 test('contract::trade_signature source: evm', async (t) => {
-    const { address, sig } = await evm.signMessage(msg);
+    const { address, sig } = await evmsigner.signMessage(msg);
     const hash = sha256(Buffer.from(msg)).toString('hex');
 
     const res = await contractCall({

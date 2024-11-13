@@ -1,10 +1,10 @@
-import { evm, bitcoin } from '../../../dist/index.js';
+import { evmTx } from '../../../dist/index.js';
 
 export const initState = {
     app: {},
     overlay: {},
     transaction: {
-        json: evm.defaultTx,
+        json: evmTx.defaultTx,
     },
     bitcoin: {
         step: 'connect',

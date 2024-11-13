@@ -1,13 +1,13 @@
 import test from 'ava';
 
-import { nearProvider, bitcoin } from '../dist/index.js';
+import { nearProvider, bitcoinSigner } from '../dist/index.js';
 import { sha256 } from 'bitcoinjs-lib/src/crypto.js';
 const { contractCall, contractView } = nearProvider;
 
 const msg = 'hello world';
 
-test('lib.bitcoin.signMessage', async (t) => {
-    const { pk, sig } = await bitcoin.signMessage(msg);
+test('lib.bitcoinsigner.signMessage', async (t) => {
+    const { pk, sig } = await bitcoinsigner.signMessage(msg);
     t.not(pk, undefined);
     t.not(sig, undefined);
     t.is(pk.length, 64);
@@ -15,7 +15,7 @@ test('lib.bitcoin.signMessage', async (t) => {
 });
 
 test('contract::verify_owner source: bitcoin', async (t) => {
-    const { pk, sig } = await bitcoin.signMessage(msg);
+    const { pk, sig } = await bitcoinsigner.signMessage(msg);
 
     const res = await contractView({
         methodName: 'verify_owner',
@@ -31,7 +31,7 @@ test('contract::verify_owner source: bitcoin', async (t) => {
 });
 
 test('contract::trade_signature source: bitcoin', async (t) => {
-    const { pk, sig } = await bitcoin.signMessage(msg);
+    const { pk, sig } = await bitcoinsigner.signMessage(msg);
     const hash = sha256(Buffer.from(msg)).toString('hex');
 
     const res = await contractCall({
