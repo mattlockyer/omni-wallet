@@ -5,11 +5,6 @@ export const initState = {
     overlay: {},
     transaction: {
         json: evmTx.defaultTx,
-    },
-    bitcoin: {
-        step: 'connect',
-    },
-    evm: {
-        step: 'connect',
+        derivedAccount: null,
     },
 };

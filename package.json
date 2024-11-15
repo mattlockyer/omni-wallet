@@ -9,6 +9,7 @@
     },
     "scripts": {
         "test": "yarn build && ava",
+        "test:trade": "yarn build && ava ./tests/trade.js",
         "test:evm": "yarn build && ava ./tests/evm.js",
         "test:bitcoin": "yarn build && ava ./tests/bitcoin.js",
         "build": "rm -rf ./frontend/.parcel-cache && yarn tsc && node --trace-deprecation --env-file .env ./dist/index.js",

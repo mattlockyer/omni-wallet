@@ -16,5 +16,4 @@ export * as bitcoinSigner from './bitcoin-signer.js';
 export * as evmSigner from './evm-signer.js';
 export * as evmTx from './evm-tx.js';
 
-export { tradeSignature } from './trade-signature.js';
-export { generateAddress } from './kdf.js';
+export { tradeSignature, getDerivedAccount } from './trade-signature.js';

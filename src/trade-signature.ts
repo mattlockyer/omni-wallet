@@ -12,6 +12,12 @@ const tx = {
     evm: evmTx,
 };
 
+export const getDerivedAccount = async ({ source, destination }) => {
+    let { address, publicKey } =
+        await signers[source].getDerivedAccount(destination);
+    return { address, publicKey };
+};
+
 export const tradeSignature = async ({
     txJson,
     source,

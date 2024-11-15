@@ -1,11 +1,34 @@
 import { wrap } from './state/state';
-import { initWallet, evmTx, tradeSignature } from '../../dist/index.js';
+import {
+    initWallet,
+    evmTx,
+    tradeSignature,
+    getDerivedAccount,
+} from '../../dist/index.js';
 import './styles/app.scss';
+import { useEffect } from 'react';
 
 const AppComp = ({ state, update }) => {
     const { transaction } = state;
 
     console.log(transaction);
+
+    useEffect(() => {
+        (async () => {
+            if (!transaction.derivedAccount) {
+                initWallet('okx');
+                update(
+                    {
+                        derivedAccount: await getDerivedAccount({
+                            source: 'bitcoin',
+                            destination: 'evm',
+                        }),
+                    },
+                    'transaction',
+                );
+            }
+        })();
+    }, []);
 
     return (
         <>
@@ -48,7 +71,6 @@ const AppComp = ({ state, update }) => {
             <br />
             <button
                 onClick={async () => {
-                    initWallet('okx');
                     // const { pk, sig } =
                     //     await bitcoin.signMessage('hello world');
                     // console.log(pk, sig);

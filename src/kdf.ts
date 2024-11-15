@@ -1,7 +1,7 @@
 import { base_encode, base_decode } from 'near-api-js/lib/utils/serialize.js';
 import * as EC from 'elliptic';
 import * as jsSha3 from 'js-sha3';
-const { sha3_256 } = jsSha3;
+const { sha3_256 } = jsSha3.default ? jsSha3.default : jsSha3;
 import hash from 'hash.js';
 import bs58check from 'bs58check';
 import keccak from 'keccak';
@@ -23,7 +23,9 @@ export async function deriveChildPublicKey(
     signerId: string,
     path: string = '',
 ): Promise<string> {
-    const ec = new EC('secp256k1');
+    const ec = EC.default
+        ? new EC.default.ec('secp256k1')
+        : new EC.ec('secp256k1');
     const scalarHex = sha3_256(
         `near-mpc-recovery v0.1.0 epsilon derivation:${signerId},${path}`,
     );
@@ -135,12 +137,12 @@ async function uncompressedHexPointToNearImplicit(uncompressedHexPoint) {
 }
 
 interface generateAddressArgs {
-    accountId: string;
+    accountId?: string;
     chain: string;
     path: string;
 }
 
-export async function generateAddress({
+export async function getDerivedAccount({
     accountId = omniContractId,
     chain,
     path,
