@@ -1,6 +1,7 @@
 declare global {
     interface Window {
         okxwallet: any;
+        unisat: any;
     }
 }
 // window.okxwallet = window.okxwallet || {};
@@ -9,6 +10,7 @@ globalThis.wallet = 'test';
 
 export const initWallet = (wallet) => {
     globalThis.wallet = wallet;
+    console.log('TS: wallet', wallet);
 };
 
 export * as nearProvider from './near-provider.js';

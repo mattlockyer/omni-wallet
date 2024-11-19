@@ -153,7 +153,7 @@ export async function getDerivedAccount({
             methodName: 'public_key',
         });
     }
-    console.log('publicKey', mpcPublicKey);
+    // console.log('publicKey', mpcPublicKey);
     // console.log('accountId', accountId);
     // console.log('path', path);
 

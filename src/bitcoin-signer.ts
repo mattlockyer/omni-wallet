@@ -7,15 +7,23 @@ import { getDerivedAccount as _getDerivedAccount } from './kdf.js';
 const messagePrefix = '\u0018Bitcoin Signed Message:\n';
 
 export const getDerivedAccount = async (destination) => {
-    let address, publicKey;
+    let path;
     switch (globalThis.wallet) {
         case 'okx':
+            if (typeof window.okxwallet === 'undefined') {
+                new Error('OKX Wallet is installed!');
+            }
             const res = await window.okxwallet.bitcoin.connect();
-            ({ address, publicKey } = await _getDerivedAccount({
-                chain: destination,
-                path: res.publicKey,
-            }));
-            return { address, publicKey };
+            path = res.publicKey;
+            break;
+        case 'unisat':
+            if (typeof window.unisat === 'undefined') {
+                new Error('UniSat Wallet is installed!');
+            }
+            await window.unisat.requestAccounts();
+            path = await window.unisat.getPublicKey();
+            path = path.substring(2);
+            break;
         case 'test':
         default:
             const { ECPairFactory } = ecpair;
@@ -23,14 +31,14 @@ export const getDerivedAccount = async (destination) => {
             const keyPair = ECPair.fromWIF(
                 'L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1',
             );
-            let pk = keyPair.publicKey as any;
-            pk = pk.toString('hex').substring(2);
-            ({ address, publicKey } = await _getDerivedAccount({
-                chain: destination,
-                path: pk,
-            }));
-            return { address, publicKey };
+            path = keyPair.publicKey as any;
+            path = path.toString('hex').substring(2);
     }
+
+    return _getDerivedAccount({
+        chain: destination,
+        path,
+    });
 };
 
 export const signMessage = async (msg) => {
@@ -40,15 +48,20 @@ export const signMessage = async (msg) => {
     let pk, sig;
     switch (globalThis.wallet) {
         case 'okx':
+            if (typeof window.okxwallet === 'undefined') {
+                new Error('OKX Wallet is installed!');
+            }
             const res = await window.okxwallet.bitcoin.connect();
+            pk = res.publicKey;
             sig = await window.okxwallet.bitcoin.signMessage(msg, 'ecdsa');
-
-            return {
-                pk: res.publicKey,
-                sig,
-            };
         case 'unisat':
-            console.log('unsupported');
+            if (typeof window.unisat === 'undefined') {
+                new Error('UniSat Wallet is installed!');
+            }
+            await window.unisat.requestAccounts();
+            pk = await window.unisat.getPublicKey();
+            pk = pk.substring(2);
+            sig = await window.unisat.signMessage(msg, 'ecdsa');
             break;
         case 'test':
         default:
@@ -59,7 +72,6 @@ export const signMessage = async (msg) => {
             );
             pk = keyPair.publicKey;
             const privateKey = keyPair.privateKey;
-
             sig = bitcoinMessage.sign(
                 msg,
                 privateKey,
@@ -84,6 +96,7 @@ export const signMessage = async (msg) => {
             pk = pk.toString('hex').substring(2);
             sig = sig.toString('base64');
     }
+
     return {
         pk,
         sig,

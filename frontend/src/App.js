@@ -11,21 +11,22 @@ import { useEffect } from 'react';
 const AppComp = ({ state, update }) => {
     const { transaction } = state;
 
-    console.log(transaction);
-
     useEffect(() => {
         (async () => {
             if (!transaction.derivedAccount) {
-                initWallet('okx');
-                update(
-                    {
-                        derivedAccount: await getDerivedAccount({
-                            source: 'bitcoin',
-                            destination: 'evm',
-                        }),
-                    },
-                    'transaction',
-                );
+                // initWallet('okx');
+                // let derivedAccount = await getDerivedAccount({
+                //     source: 'bitcoin',
+                //     destination: 'evm',
+                // });
+                // console.log(derivedAccount);
+                initWallet('unisat');
+                derivedAccount = await getDerivedAccount({
+                    source: 'bitcoin',
+                    destination: 'evm',
+                });
+                console.log(derivedAccount);
+                update({ derivedAccount }, 'transaction');
             }
         })();
     }, []);
