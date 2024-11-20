@@ -3,25 +3,30 @@ import { bitcoinSigner } from './index.js';
 import { evmSigner } from './index.js';
 import { evmTx } from './index.js';
 
-const signers = {
+const source = {
     bitcoin: bitcoinSigner,
     evm: evmSigner,
 };
 
-const tx = {
+const destination = {
     evm: evmTx,
 };
 
-export const getDerivedAccount = async ({ source, destination }) => {
-    let { address, publicKey } =
-        await signers[source].getDerivedAccount(destination);
+export const getBalance = async (address) => {
+    const balance =
+        await destination[globalThis.destination].getBalance(address);
+    return balance;
+};
+
+export const getDerivedAccount = async () => {
+    const { address, publicKey } = await source[
+        globalThis.source
+    ].getDerivedAccount(globalThis.destination);
     return { address, publicKey };
 };
 
 export const tradeSignature = async ({
     txJson,
-    source,
-    destination,
     onSignProgress = () => console.log('signature requested'),
     onSignError = (e) => console.error('signature error', e),
     onNearProgress = () => console.log('NEAR contract called'),
@@ -34,7 +39,7 @@ export const tradeSignature = async ({
 
     let pk, sig;
     try {
-        ({ pk, sig } = await signers[source].signMessage(txJson));
+        ({ pk, sig } = await source[globalThis.source].signMessage(txJson));
     } catch (e) {
         return onSignError(e);
     }
@@ -49,8 +54,8 @@ export const tradeSignature = async ({
                 owner: pk,
                 msg: JSON.stringify(txJson),
                 sig,
-                source,
-                destination,
+                source: globalThis.source,
+                destination: globalThis.destination,
             },
         });
     } catch (e) {
@@ -61,7 +66,10 @@ export const tradeSignature = async ({
 
     let txRes;
     try {
-        txRes = await tx[destination].completeTx(txJson, sigRes);
+        txRes = await destination[globalThis.destination].completeTx(
+            txJson,
+            sigRes,
+        );
     } catch (e) {
         return onTxError(e);
     }

@@ -16,6 +16,12 @@ const getSepoliaProvider = () => {
     );
 };
 
+export const getBalance = async (address) => {
+    const rawBalance = await getSepoliaProvider().getBalance(address);
+    const balanceInEth = ethers.formatEther(rawBalance);
+    return balanceInEth;
+};
+
 export const completeTx = async (txJson, sigRes) => {
     console.log('txJson', txJson);
     console.log('sigRes', sigRes);

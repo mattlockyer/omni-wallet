@@ -12,3 +12,23 @@
 .overlay.active {
 	display: block;
 }
+
+section {
+	margin: 8px;
+}
+
+.btn-circle {
+	border-radius: 50% !important;
+}
+
+.textarea {
+	margin-bottom: -6px;
+	border: 2px solid #eee;
+	padding: 8px;
+	border-radius: 16px;
+	resize: none;
+	outline: none;
+	&:focus {
+		border: 2px solid #bbb;
+	}
+}
