@@ -54,6 +54,7 @@ export const signMessage = async (msg) => {
             const res = await window.okxwallet.bitcoin.connect();
             pk = res.publicKey;
             sig = await window.okxwallet.bitcoin.signMessage(msg, 'ecdsa');
+            break;
         case 'unisat':
             if (typeof window.unisat === 'undefined') {
                 new Error('UniSat Wallet is installed!');

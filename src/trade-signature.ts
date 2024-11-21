@@ -1,15 +1,15 @@
 import { contractCall } from './near-provider.js';
-import { bitcoinSigner } from './index.js';
-import { evmSigner } from './index.js';
-import { evmTx } from './index.js';
+import { bitcoinSource } from './index.js';
+import { evmSource } from './index.js';
+import { evmTarget } from './index.js';
 
 const source = {
-    bitcoin: bitcoinSigner,
-    evm: evmSigner,
+    bitcoin: bitcoinSource,
+    evm: evmSource,
 };
 
 const destination = {
-    evm: evmTx,
+    evm: evmTarget,
 };
 
 export const getBalance = async (address) => {

@@ -1,11 +1,11 @@
-import { evmTx } from '../../../dist/index.js';
+import { evmTarget } from '../../../dist/index.js';
 
 export const initState = {
     app: {},
     overlay: {},
     transaction: {
         wallet: 'okx',
-        json: evmTx.defaultTx,
+        json: evmTarget.defaultTx,
         derivedAccount: null,
     },
 };

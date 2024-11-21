@@ -1,5 +1,7 @@
 import * as ethers from 'ethers';
 
+export const explorer = 'https://sepolia.etherscan.io';
+
 export const defaultTx = {
     to: '0x525521d79134822a342d330bd91DA67976569aF1',
     nonce: '1',
