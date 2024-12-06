@@ -1,27 +1,25 @@
 import { contractCall } from './near-provider.js';
-import { bitcoinSource } from './index.js';
-import { evmSource } from './index.js';
-import { evmTarget } from './index.js';
+import { bitcoinSource, evmSource, evmTarget } from './index.js';
+import { relayerUrl } from './env.js';
 
 const source = {
     bitcoin: bitcoinSource,
     evm: evmSource,
 };
 
-const destination = {
+const target = {
     evm: evmTarget,
 };
 
 export const getBalance = async (address) => {
-    const balance =
-        await destination[globalThis.destination].getBalance(address);
+    const balance = await target[globalThis.target].getBalance(address);
     return balance;
 };
 
 export const getDerivedAccount = async () => {
     const { address, publicKey } = await source[
         globalThis.source
-    ].getDerivedAccount(globalThis.destination);
+    ].getDerivedAccount(globalThis.target);
     return { address, publicKey };
 };
 
@@ -48,16 +46,30 @@ export const tradeSignature = async ({
 
     let sigRes;
     try {
-        sigRes = await contractCall({
-            methodName: 'trade_signature',
-            args: {
-                owner: pk,
-                msg: JSON.stringify(txJson),
-                sig,
-                source: globalThis.source,
-                destination: globalThis.destination,
-            },
-        });
+        if (relayerUrl) {
+            sigRes = await fetch(`${relayerUrl}/trade`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    owner: pk,
+                    msg: JSON.stringify(txJson),
+                    sig,
+                    source: globalThis.source,
+                    destination: globalThis.target,
+                }),
+            }).then((r) => r.json());
+        } else {
+            // for testing call contract directly from lib
+            sigRes = await contractCall({
+                methodName: 'trade_signature',
+                args: {
+                    owner: pk,
+                    msg: JSON.stringify(txJson),
+                    sig,
+                    source: globalThis.source,
+                    destination: globalThis.target,
+                },
+            });
+        }
     } catch (e) {
         return onNearError(e);
     }
@@ -66,10 +78,7 @@ export const tradeSignature = async ({
 
     let txRes;
     try {
-        txRes = await destination[globalThis.destination].completeTx(
-            txJson,
-            sigRes,
-        );
+        txRes = await target[globalThis.target].completeTx(txJson, sigRes);
     } catch (e) {
         return onTxError(e);
     }

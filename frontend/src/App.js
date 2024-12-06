@@ -143,14 +143,6 @@ const AppComp = ({ state, update }) => {
                                 Sign TX
                             </button>
                         </section>
-                        <section>
-                            <button
-                                className="btn btn-primary"
-                                onClick={() => updateOverlay('test')}
-                            >
-                                Test
-                            </button>
-                        </section>
                     </>
                 )}
             </div>

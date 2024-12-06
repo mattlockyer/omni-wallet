@@ -7,7 +7,7 @@ declare global {
 // window.okxwallet = window.okxwallet || {};
 globalThis.runtime = typeof window === 'undefined' ? 'node' : 'browser';
 globalThis.source = 'bitcoin';
-globalThis.destination = 'evm';
+globalThis.target = 'evm';
 globalThis.wallet = 'test';
 
 export const init = (source, destination, wallet) => {
@@ -19,7 +19,7 @@ export const init = (source, destination, wallet) => {
 export * as nearProvider from './near-provider.js';
 export * as bitcoinSource from './bitcoin-source.js';
 export * as evmSource from './evm-source.js';
-export * as evmTarget from './evm-destination.js';
+export * as evmTarget from './evm-target.js';
 
 export {
     tradeSignature,

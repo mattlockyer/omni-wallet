@@ -1,0 +1,17 @@
+{
+    "name": "backend",
+    "version": "1.0.0",
+    "license": "MIT",
+    "type": "module",
+    "scripts": {
+        "start": "node src/app.js"
+    },
+    "dependencies": {
+        "dotenv": "^16.4.5",
+        "near-api-js": "^5.0.1",
+        "hono": "^4.6.12"
+    },
+    "devDependencies": {
+        "@hono/node-server": "^1.13.7"
+    }
+}
