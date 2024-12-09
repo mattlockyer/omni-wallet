@@ -22,7 +22,7 @@ This library helps developers prepare intents, sign them with popular wallets, c
 1. User wants to make a transaction on Chain Y (target chain)
 1. App uses Omniwallet library to prepare intent and ask user to sign
 1. User signs intent (JSON) with wallet (from Chain X the source chain)
-1. App uses Omniwallet library to broadcast intent, signature and the user's publicKey/address to the Omniwallet contract
+1. App uses Omniwallet relayer to broadcast intent, signature and the user's publicKey/address to the Omniwallet contract
 1. Omniwallet contract verifies the user's publicKey/address from Chain X signed the intent
 1. Contract encodes the intent into a transaction hash for Chain Y
 1. Contract requests a signature from the NEAR Chain Signatures (NCS) contract
@@ -32,6 +32,44 @@ This library helps developers prepare intents, sign them with popular wallets, c
 1. App uses library to get transaction response from Chain Y
 
 ![image](https://github.com/user-attachments/assets/cd8f965a-780f-48bb-9dde-1fca7babec84)
+
+## Getting Started
+
+Create a `.env` file with the following:
+
+```
+REACT_APP_mpcContractId=v1.signer-prod.testnet
+REACT_APP_omniContractId=forgetful-parent.testnet
+REACT_APP_accountId=[YOUR_NEAR_ACCOUNT_FOR_RELAYING_NEAR_TXS]
+REACT_APP_secretKey=[YOUR_NEAR_ACCOUNT_SECRET_KEY]
+REACT_APP_relayerUrl=http://localhost:3000
+```
+
+A copy of this `.env` should be in the following locations:
+
+```
+/
+/frontend
+/backend
+```
+
+`REACT_APP_mpcContractId` must match the contract in `REACT_APP_omniContractId` (if you deploy your own copy of the contract, you can change the MPC contract).
+
+`REACT_APP_accountId` is the NEAR Account that is used in your relayer to pay for the user's NEAR TX calls to the contract. This is also useful for debugging the library locally by calling the contract directly without the relayer. To do this remove `REACT_APP_relayerUrl` from your `.env`.
+
+`REACT_APP_relayerUrl` you might choose to run your relayer from a different location. Included is the most basic backend relay. Other options include using Meta Transactions and Access Keys, depending on your use case.
+
+## Install and Start
+
+```
+yarn
+yarn build
+cd frontend
+yarn start
+# another terminal
+cd backend
+yarn start
+```
 
 ## NCS Derived Accounts (DAs) and Signatures
 
